@@ -1,0 +1,44 @@
+Sub eh()
+Dim Cll As Range
+Dim Cll2 As Range
+Dim myFile As String
+myFile = Application.DefaultFilePath & "\ree.csv"
+Open myFile For Output As #1
+Dim uniques As Collection
+Dim source As Range
+Set source = ActiveSheet.Range("K2:K8")
+Set uniques = GetUniqueValues(source.Value)
+Dim it
+For Each it In uniques
+Write #1,
+Write #1, it
+Write #1,
+For Each Cll2 In Range("K2:K8")
+If Not IsError(Application.Match(it, Cll2, 0)) Then
+ip = Cll2.Offset(0, -7).Value
+Write #1, ip
+End If
+Next Cll2
+Next it
+Close #1
+End Sub
+
+Public Function GetUniqueValues(ByVal values As Variant) As Collection
+    Dim result As Collection
+    Dim cellValue As Variant
+    Dim cellValueTrimmed As String
+
+    Set result = New Collection
+    Set GetUniqueValues = result
+
+    On Error Resume Next
+
+    For Each cellValue In values
+        cellValueTrimmed = Trim(cellValue)
+        If cellValueTrimmed = "" Then GoTo NextValue
+        result.Add cellValueTrimmed, cellValueTrimmed
+NextValue:
+    Next cellValue
+
+    On Error GoTo 0
+End Function
